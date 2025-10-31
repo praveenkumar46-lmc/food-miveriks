@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Awwwards Side Menu (Panel)</title>
+    <style>
+        /* --- CSS Variables (Colors from the demo) --- */
+        :root {
+            --page-bg: #f3f3f3;
+            --header-bg: #111111;
+            --text-color: #111111;
+            --menu-bg: #c2f47b; /* The key lime green color */
+        }
+
+        /* --- Basic Setup --- */
+        body {
+            margin: 0;
+            font-family: 'Helvetica Neue', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background-color: var(--page-bg);
+            color: var(--text-color);
+        }
+
+        /* --- Controller Class ---
+           When the menu is open, we add this class to the body
+           to prevent the background page from scrolling.
+        */
+        body.menu-open {
+            overflow: hidden;
+        }
+
+        /* --- Main Page Header --- */
+        .page-header {
+            background-color: var(--header-bg);
+            color: white;
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-weight: bold;
+        }
+
+        #menu-open-btn {
+            background: none;
+            border: 1px solid #444;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        #menu-open-btn:hover {
+            background-color: white;
+            color: var(--header-bg);
+        }
+        
+        /* --- Main Page Content --- */
+        .main-content {
+            padding: 2rem 30px;
+            height: 200vh; /* To make page scrollable */
+        }
+        .main-content h1 {
+            font-size: 3rem;
+        }
+
+        /*
+          --- 1. The Side Menu Panel ---
+        */
+        #side-menu {
+            position: fixed;
+            top: 0;
+            right: 0;
+            height: 100vh;
+            width: 90%; /* Responsive width for smaller screens */
+            max-width: 500px; /* Max width on larger screens */
+            background-color: var(--menu-bg);
+            z-index: 1000;
+            
+            /* Rounded corners on the left side */
+            border-top-left-radius: 25px;
+            border-bottom-left-radius: 25px;
+            box-shadow: -10px 0 30px rgba(0, 0, 0, 0.1);
+
+            display: flex;
+            flex-direction: column;
+            
+            /* --- The Core Animation --- */
+            /* Initial state: The panel is hidden off-screen to the right */
+            transform: translateX(100%);
+            /* Smooth transition for the slide-in/out animation */
+            transition: transform 0.6s cubic-bezier(0.82, 0, 0.18, 1);
+        }
+
+        /* When the body has .menu-open, the panel slides into view */
+        body.menu-open #side-menu {
+            transform: translateX(0);
+        }
+
+        /* --- 2. Menu Content & Layout --- */
+        .menu-header {
+            display: flex;
+            justify-content: flex-end;
+            padding: 30px;
+        }
+
+        #menu-close-btn {
+            background-color: var(--text-color);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            font-weight: 600;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        #menu-close-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .menu-links {
+            flex-grow: 1; /* Takes up available space to push footer down */
+            display: flex;
+            align-items: center;
+            padding-left: 10%;
+        }
+
+        .menu-links ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        /* --- 3. The Link Stagger Animation --- */
+        .menu-links li {
+            /* Initial state: invisible and shifted down */
+            opacity: 0;
+            transform: translateY(40px);
+            /* The transition that will be triggered */
+            transition: opacity 0.8s cubic-bezier(0.23, 1, 0.32, 1), 
+                        transform 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        
+        /* When menu is open, links animate to their final state */
+        body.menu-open .menu-links li {
+            opacity: 1;
+            transform: translateY(0);
+            /* Stagger delay is applied via inline style from JS */
+        }
+        
+        .menu-links a {
+            display: block;
+            font-size: clamp(2.5rem, 6vw, 3.5rem); /* Responsive font size */
+            font-weight: 700;
+            color: var(--text-color);
+            text-decoration: none;
+            line-height: 1.3;
+            transition: transform 0.3s ease;
+        }
+
+        .menu-links a:hover {
+            transform: translateX(10px);
+        }
+
+        .menu-footer {
+            padding: 30px 10%;
+            font-size: 1rem;
+            color: #555;
+            opacity: 0;
+            transition: opacity 0.6s ease 0.5s;
+        }
+        
+        body.menu-open .menu-footer {
+            opacity: 1;
+        }
+
+    </style>
+</head>
+<body>
+
+    <header class="page-header">
+        <div class="logo">My Website</div>
+        <button id="menu-open-btn" aria-label="Open Menu" aria-expanded="false">Menu</button>
+    </header>
+    
+    <main class="main-content">
+        <h1>Awwwards-Style Side Panel</h1>
+        <p>This version slides in from the side without affecting the main page content, just like the reference example.</p>
+    </main>
+
+    <nav id="side-menu" aria-hidden="true">
+        <div class="menu-header">
+            <button id="menu-close-btn" aria-label="Close Menu">CLOSE</button>
+        </div>
+        <div class="menu-links">
+            <ul>
+                <li><a href="#">Projects</a></li>
+                <li><a href="#">Agency</a></li>
+                <li><a href="#">Expertise</a></li>
+                <li><a href="#">Careers</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+        </div>
+        <div class="menu-footer">
+            <span>Facebook / LinkedIn / Twitter</span>
+        </div>
+    </nav>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const menuOpenBtn = document.getElementById('menu-open-btn');
+            const menuCloseBtn = document.getElementById('menu-close-btn');
+            const sideMenu = document.getElementById('side-menu');
+            const menuLinks = document.querySelectorAll('.menu-links li');
+            const body = document.body;
+
+            const openMenu = () => {
+                body.classList.add('menu-open');
+                menuOpenBtn.setAttribute('aria-expanded', 'true');
+                sideMenu.setAttribute('aria-hidden', 'false');
+            };
+
+            const closeMenu = () => {
+                body.classList.remove('menu-open');
+                menuOpenBtn.setAttribute('aria-expanded', 'false');
+                sideMenu.setAttribute('aria-hidden', 'true');
+            };
+
+            // Set staggered transition delays on each menu link
+            menuLinks.forEach((link, index) => {
+                // The base delay allows the panel to slide in first
+                const delay = 0.3 + index * 0.08;
+                link.style.transitionDelay = `${delay}s`;
+            });
+
+            // Event Listeners
+            menuOpenBtn.addEventListener('click', openMenu);
+            menuCloseBtn.addEventListener('click', closeMenu);
+
+            // Optional: Close menu with the 'Escape' key for better accessibility
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && body.classList.contains('menu-open')) {
+                    closeMenu();
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>
